@@ -29,6 +29,7 @@
             <label for="isbn">ISBN:</label>
             <input type="text" name="isbn" id="isbn">
             <br>
+            <input type="hidden" value="coisa" name="nulo">
             <input type="submit" value="Enviar">
         </form>
     </fieldset>
