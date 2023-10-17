@@ -2,31 +2,23 @@
 
 require_once 'conn.php';
 
+$name = (isset($_POST['name'])) ? $_POST['name'] : '';
+$game_name = (isset($_POST['game_name'])) ? $_POST['game_name'] : '';
+$description = (isset($_POST['description'])) ? $_POST['description'] : '';
+$id = (isset($_POST['id'])) ? $_POST['id'] : '10';
 
-$titulo = (isset($_POST['titulo'])) ? $_POST['titulo'] : '';
-$autor = (isset($_POST['autor'])) ? $_POST['autor'] : '';
-$isbn = (isset($_POST['isbn'])) ? $_POST['isbn'] : '';
-$id = (isset($_POST['id'])) ? $_POST['id'] : '2';
+if(isset($_POST['name'])){
+      
+      $res = $mysqli->query("UPDATE girias SET name = '$name', game_name = '$game_name', description = '$description' WHERE id = $id");
+      
+      if(!$res) die('deu erro');
 
-# Executa a query desejada 
-
-if(isset($_POST['titulo'])){
-    $query = " UPDATE livro SET titulo = '$titulo', autor = '$autor', isbn = '$isbn' WHERE id = $id";
-    $result_query = mysql_query( $query ) or die(' Erro na query:' . $query . ' ' . mysql_error() );
-    header ("Location: read.php");
+      header ("Location: read.php");
 } else {
 
+      $res = $mysqli->query("SELECT * FROM girias WHERE id = $id");
 
-
-// # Exibe os registros na tela 
-// while ($row = mysql_fetch_array( $result_query ))
-// { 
-//       echo $row['id']  . " <br> " . $row['nome'] . " <br> " . $row['sobrenome'] . " <br> " . $row['sexo'] . " <br> " . $row['fucao'] . " <br> " . $row['foto'] . " <br> " . $row['ativo'] . " -- " . $row['senha']; 
-// }
-
-//var query recieve from sql query read a row from database by id
-$query = "SELECT * FROM livro WHERE id = $id"; 
-$result_query = mysql_query( $query ) or die(' Erro na query:' . $query . ' ' . mysql_error() );
+      $itens = $res->fetch_all(MYSQLI_ASSOC);
 
 ?>
 <!DOCTYPE html>
@@ -35,23 +27,22 @@ $result_query = mysql_query( $query ) or die(' Erro na query:' . $query . ' ' . 
       <meta charset="UTF-8">
       <meta http-equiv="X-UA-Compatible" content="IE=edge">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Lendo os livros</title>
+      <title>Lendo os giriass</title>
 </head>
 <body>
       <div>
             <form action="update.php" method="post">
                   <?php 
-                  while ($row = mysql_fetch_array( $result_query )) 
-                  { 
-                   ?>
-                  <label for="titulo">Titulo:</label>
-                  <input type="text" name="titulo" id="titulo" value="<?php echo $row['titulo'] ?>"><br>
+                        foreach ($itens as $key => $item) {
+                  ?>
+                  <label for="name">name:</label>
+                  <input type="text" name="name" id="name" value="<?php echo $item['name'] ?>"><br>
                   <br>
-                  <label for="autor">Autor:</label>
-                  <input type="text" name="autor" id="autor" value="<?php echo $row['autor'] ?>"><br>
+                  <label for="game_name">game_name:</label>
+                  <input type="text" name="game_name" id="game_name" value="<?php echo $item['game_name'] ?>"><br>
                   <br>
-                  <label for="isbn">ISBN:</label>
-                  <input type="text" name="isbn" id="isbn" value="<?php echo $row['isbn'] ?>"><br>
+                  <label for="description">description:</label>
+                  <input type="text" name="description" id="description" value="<?php echo $item['description'] ?>"><br>
                   <br>
                   <?php } ?>
                   <input type="submit" value="Atualizar">
